@@ -1,5 +1,5 @@
 use super::SkyboxEncoder;
-use image::{ImageError, Rgb32FImage};
+use image::Rgb32FImage;
 use std::path::Path;
 
 pub struct ExrEncoder;
