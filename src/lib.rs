@@ -1,5 +1,6 @@
 pub mod codecs;
+pub mod layouts;
 pub mod math;
-pub mod process;
 
-pub use process::{ConvertOptions, generate_cross_layout};
+pub use codecs::{OutputFormat, get_encoder};
+pub use layouts::{LayoutType, generate_layout};
