@@ -4,8 +4,6 @@ A high-performance CLI tool written in Rust to convert Equirectangular HDRI imag
 
 ## ✨ Features
 
-- **⚡ High Performance:** Uses `rayon` for parallel processing across all CPU cores.
-- **📐 High Precision:** Internal processing uses 32-bit floating point (`f32`) to preserve HDR data.
 - **🌈 Formats:**
   - **Input:** `.hdr` (Radiance), `.exr` (OpenEXR).
   - **Output:** `.png` (Tone Mapped LDR), `.exr` (Linear HDR).
@@ -14,6 +12,12 @@ A high-performance CLI tool written in Rust to convert Equirectangular HDRI imag
   - `strip-h`: Horizontal strip ($6 \times 1$).
   - `strip-v`: Vertical strip ($1 \times 6$).
 - **🔍 Quality:** Uses Bilinear Interpolation for smooth sampling.
+- **🎨 Tonemap:** Various tonemap options for the output file.
+  - `ACES` Source: http://www.oscars.org/science-technology/sci-tech-projects/aces
+  - `Khronos PBR Neutral` Source: https://github.com/KhronosGroup/ToneMapping/blob/main/PBR_Neutral/pbrNeutral.glsl
+  - `Reinhard` Source: https://www-old.cs.utah.edu/docs/techreports/2002/pdf/UUCS-02-001.pdf
+  - `AgX` Source: Coming Soon.
+  - `Linear` or `None` Simple clamping system.
 
 ---
 
