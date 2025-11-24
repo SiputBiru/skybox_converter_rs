@@ -2,8 +2,8 @@ use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
 use std::time::Instant;
 
-use skybox_converter::codecs::ToneMapType;
-use skybox_converter::{codecs, layouts};
+use eq2c::codecs::ToneMapType;
+use eq2c::{codecs, layouts};
 
 #[derive(Parser)]
 #[command(

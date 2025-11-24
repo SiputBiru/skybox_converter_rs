@@ -1,6 +1,7 @@
-# 🌤️ Rust Skybox Converter
+# 🌤️ eq2c
 
-A high-performance CLI tool written in Rust to convert Equirectangular HDRI images into Cubemaps. It supports high-precision floating-point processing, multithreaded rendering, and automatic tone mapping for LDR outputs.
+eq2c (Equi-to-Cube) is a high-performance CLI tool written in Rust to convert Equirectangular HDRI images into Cubemaps.
+It supports high-precision floating-point processing, multithreaded rendering, and automatic tone mapping for LDR outputs.
 
 ## ✨ Features
 

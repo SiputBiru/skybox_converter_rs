@@ -1,6 +1,6 @@
 [package]
-name = "skybox_converter"
-version = "0.1.1"
+name = "eq2c"
+version = "0.1.0-alpha"
 edition = "2024"
 
 [dependencies]
