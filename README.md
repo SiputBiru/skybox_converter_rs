@@ -29,14 +29,14 @@ You need the Rust toolchain installed. If you don't have it, get it at [rustup.r
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/SiputBiru/skybox_converter_rs
-    cd skybox-converter_rs
+    git clone https://github.com/SiputBiru/eq2c-rs
+    cd eq2c-rs
     ```
 
 2.  **Build for Release:**
 
     > **Note:** Always build in release mode! Debug builds are significantly larger and slower.
-    -
+    - default command for cargo build with release profile
 
     ```bash
     cargo build --release
@@ -48,21 +48,21 @@ You need the Rust toolchain installed. If you don't have it, get it at [rustup.r
     cargo build --target x86_64-pc-windows-gnu --release
     ```
 
-The executable will be located at `./target/release/skybox_converter`
+The executable will be located at `./target/release/eq2c`
 
 ---
 
 ## 📖 Usage
 
 You can run the tool directly via cargo or use the compiled binary.
-if using the compiled binary use **./skybox_converter** or **cargo run --**
+if using the compiled binary use **./eq2c** or **cargo run --**
 
 ### Basic Conversion
 
 Convert an HDR image to a standard PNG cubemap (Cross layout, 512px faces).
 
 ```bash
-./skybox_converter -i input.hdr -o output.png
+./eq2c -i input.hdr -o output.png
 ```
 
 ### Change Output Layout
@@ -70,13 +70,13 @@ Convert an HDR image to a standard PNG cubemap (Cross layout, 512px faces).
 Generate a Horizontal Strip (6 x 1) instead of cross.
 
 ```bash
-./skybox_converter -i input.exr -o sky_strip.png --layout strip-h
+./eq2c -i input.exr -o sky_strip.png --layout strip-h
 ```
 
 Generate a Vertical Strip (1 x 6).
 
 ```bash
-./skybox_converter -i input.exr -o strip_v.png --layout strip-v
+./eq2c -i input.exr -o strip_v.png --layout strip-v
 ```
 
 ### High-Res HDR Output
@@ -84,7 +84,7 @@ Generate a Vertical Strip (1 x 6).
 Keep the data in floating point (Linear HDR) and increase face resolution to 2048px.
 
 ```bash
-./skybox_converter -i input.hdr -o sky_hq.exr --format exr --size 2048
+./eq2c -i input.hdr -o sky_hq.exr --format exr --size 2048
 ```
 
 ### Tonemap Types
@@ -92,7 +92,7 @@ Keep the data in floating point (Linear HDR) and increase face resolution to 204
 Change the tonemap output to your liking (ACES, Khronos PBR Neutral, Reinhard, AgX, Linear).
 
 ```bash
-./skybox_converter -i input.hdr -o sky_hq.exr --format exr --t aces
+./eq2c -i input.hdr -o sky_hq.exr --format exr --t aces
 ```
 
 ## 🏗️ Project Structure
@@ -109,6 +109,7 @@ src/
 └── codecs/         # File Format encoders
     ├── mod.rs      # Encoder Factory
     ├── png.rs      # LDR Tone Mapping & PNG saving
+    ├── tonemap.rs  # tonemaps implementation
     └── exr.rs      # HDR EXR saving
 ```
 
