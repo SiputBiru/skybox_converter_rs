@@ -7,10 +7,10 @@ use eq2c::{codecs, layouts};
 
 #[derive(Parser)]
 #[command(
-    author, 
-    version, 
-    about, 
-    long_about = None, 
+    author,
+    version,
+    about,
+    long_about = None,
     after_help = "EXAMPLES:\n  \
         # Convert HDR to PNG (Cross Layout)\n  \
         skybox_converter -i input.exr -o output.png\n\n  \
