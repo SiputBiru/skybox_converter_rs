@@ -32,6 +32,9 @@ struct Cli {
     #[arg(short, long, value_enum, default_value_t = ToneMapType::Aces)]
     tonemap: ToneMapType,
 
+    #[arg(short, long, default_value_t = 1.0)]
+    exposure: f32,
+
     #[arg(short, long, default_value_t = 1024)]
     size: u32,
 }
@@ -83,7 +86,7 @@ fn main() {
     };
 
     // Pass the tonemap argument directly (it's already the correct Enum)
-    let encoder = codecs::get_encoder(format_type, args.tonemap);
+    let encoder = codecs::get_encoder(format_type, args.tonemap, args.exposure);
 
     match encoder.encode(&result_buffer, &args.output) {
         Ok(_) => {
