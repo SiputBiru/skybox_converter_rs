@@ -24,8 +24,8 @@ You need the Rust toolchain installed. If you don't have it, get it at [rustup.r
 1.  **Clone the repository:**
 
     ```bash
-    git clone [https://github.com/SiputBiru/skybox_converter_rs](https://github.com/your-username/skybox-converter.git)
-    cd skybox-converter
+    git clone https://github.com/SiputBiru/skybox_converter_rs
+    cd skybox-converter_rs
     ```
 
 2.  **Build for Release:**
@@ -43,13 +43,14 @@ The executable will be located at `./target/release/skybox_converter`.
 ## 📖 Usage
 
 You can run the tool directly via cargo or use the compiled binary.
+if using the compiled binary use **./skybox_converter** or **cargo run --**
 
 ### Basic Conversion
 
 Convert an HDR image to a standard PNG cubemap (Cross layout, 512px faces).
 
 ```bash
-cargo run --release -- -i input.hdr -o output.png
+./skybox_converter -i input.hdr -o output.png
 ```
 
 ### Change Output Layout
@@ -57,13 +58,13 @@ cargo run --release -- -i input.hdr -o output.png
 Generate a Horizontal Strip (6 x 1) instead of cross.
 
 ```bash
-cargo run --release -- -i sky.exr -o sky_strip.png --layout strip-h
+./skybox_converter -i input.exr -o sky_strip.png --layout strip-h
 ```
 
 Generate a Vertical Strip (1 x 6).
 
 ```bash
-cargo run --release -- -i sky.exr -o strip_v.png --layout strip-v
+./skybox_converter -i input.exr -o strip_v.png --layout strip-v
 ```
 
 ### High-Res HDR Output
@@ -71,7 +72,7 @@ cargo run --release -- -i sky.exr -o strip_v.png --layout strip-v
 Keep the data in floating point (Linear HDR) and increase face resolution to 2048px.
 
 ```bash
-cargo run --release -- -i sky.hdr -o sky_hq.exr --format exr --size 2048
+./skybox_converter -i input.hdr -o sky_hq.exr --format exr --size 2048
 ```
 
 ## 🏗️ Project Structure
@@ -90,3 +91,14 @@ src/
     ├── png.rs      # LDR Tone Mapping & PNG saving
     └── exr.rs      # HDR EXR saving
 ```
+
+## 🗺️ Roadmap
+
+- [x] Basic Equirectangular projection
+- [x] Multithreaded processing
+- [x] Bilinear Filtering
+- [x] PNG (LDR) & EXR (HDR) support
+- [ ] ASTC Compression (Mobile)
+- [ ] BC6H Compression (DirectX/High-End)
+- [ ] DDS Container support
+- [ ] Ktx2 Container support
