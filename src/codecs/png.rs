@@ -6,6 +6,7 @@ use std::path::Path;
 
 pub struct PngEncoder {
     pub tonemap: ToneMapType,
+    pub exposure: f32,
 }
 
 impl SkyboxEncoder for PngEncoder {
@@ -17,14 +18,16 @@ impl SkyboxEncoder for PngEncoder {
         for (x, y, pixel) in image.enumerate_pixels() {
             let hdr = Vec3::new(pixel.0[0], pixel.0[1], pixel.0[2]);
 
-            // 1. Delegate math to the tonemap module
-            let mapped = tonemap::apply_tonemap(hdr, self.tonemap);
+            let exposed = hdr * self.exposure;
 
-            // 2. Apply Gamma Correction (Linear -> sRGB)
+            // Delegate math to the tonemap module
+            let mapped = tonemap::apply_tonemap(exposed, self.tonemap);
+
+            // Apply Gamma Correction (Linear -> sRGB)
             let gamma = 1.0 / 2.2;
             let final_color = mapped.powf(gamma);
 
-            // 3. Convert to u8
+            // Convert to u8
             let r = (final_color.x * 255.0).clamp(0.0, 255.0) as u8;
             let g = (final_color.y * 255.0).clamp(0.0, 255.0) as u8;
             let b = (final_color.z * 255.0).clamp(0.0, 255.0) as u8;
