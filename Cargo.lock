@@ -341,6 +341,7 @@ dependencies = [
  "glam",
  "image",
  "rayon",
+ "thiserror",
 ]
 
 [[package]]
