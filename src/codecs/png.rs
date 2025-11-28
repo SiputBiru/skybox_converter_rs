@@ -29,9 +29,7 @@ impl SkyboxEncoder for PngEncoder {
 
             let mapped = tonemap::apply_tonemap(exposed, self.tonemap);
 
-            let gamma = 1.0 / 2.2;
-
-            let final_color = mapped.powf(gamma);
+            let final_color = Vec3::new(mapped.x.sqrt(), mapped.y.sqrt(), mapped.z.sqrt());
 
             let r = (final_color.x * 255.0).clamp(0.0, 255.0) as u8;
             let g = (final_color.y * 255.0).clamp(0.0, 255.0) as u8;

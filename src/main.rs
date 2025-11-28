@@ -1,11 +1,8 @@
 use clap::{Parser, ValueEnum};
-use rayon::prelude::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::time::Instant;
 
-use eq2c::codecs::ToneMapType;
-use eq2c::math::CubeFace;
-use eq2c::{codecs, layouts};
+use eq2c::{self, codecs::ToneMapType};
 
 #[derive(Parser)]
 #[command(
@@ -57,93 +54,30 @@ enum LayoutArg {
 
 fn main() {
     let args = Cli::parse();
-    let start_time = Instant::now();
+    let start = Instant::now();
 
-    println!("Loading {}...", args.input.display());
-    let img_result = image::open(&args.input);
-    let img = match img_result {
-        Ok(i) => i.into_rgb32f(),
-        Err(e) => {
-            eprintln!("Error loading image: {}", e);
-            std::process::exit(1);
-        }
-    };
-
-    // --- Stats Check ---
-    let raw_pixels = img.as_raw();
-    let max_brightness = raw_pixels
-        .par_iter()
-        .cloned()
-        .reduce(|| 0.0f32, |a, b| a.max(b));
-    if max_brightness > 10.0 {
-        let suggested = 1.0 / (max_brightness * 0.1);
-        println!(
-            "Note: Max Brightness = {:.2}. Recommended exposure: ~{:.4}",
-            max_brightness, suggested
-        );
-    }
-
-    println!("Generating layout...");
-
-    let layout_type = match args.layout {
-        LayoutArg::Cross => layouts::LayoutType::Cross,
-        LayoutArg::StripH => layouts::LayoutType::StripHorizontal,
-        LayoutArg::StripV => layouts::LayoutType::StripVertical,
-        LayoutArg::Separate => layouts::LayoutType::Separate,
-    };
-
-    let layout_output = layouts::generate_layout(layout_type, &img, args.size);
-
-    println!(
-        "Encoding to output (Tone Map: {:?}, Exposure: {})...",
-        args.tonemap, args.exposure
-    );
-
-    let format_type = match args.format {
-        FormatArg::Png => codecs::OutputFormat::Png,
-        FormatArg::Exr => codecs::OutputFormat::Exr,
-    };
-    let encoder = codecs::get_encoder(format_type, args.tonemap, args.exposure);
-
-    // --- Save Logic ---
-    match layout_output {
-        layouts::LayoutOutput::Single(buffer) => match encoder.encode(&buffer, &args.output) {
-            Ok(_) => println!("Success! Saved to {}", args.output.display()),
-            Err(e) => eprintln!("Error: {}", e),
+    let config = eq2c::Config {
+        input: args.input,
+        output: args.output,
+        format: match args.format {
+            FormatArg::Png => eq2c::OutputFormat::Png,
+            FormatArg::Exr => eq2c::OutputFormat::Exr,
         },
+        layout: match args.layout {
+            LayoutArg::Cross => eq2c::LayoutType::Cross,
+            LayoutArg::StripH => eq2c::LayoutType::StripHorizontal,
+            LayoutArg::StripV => eq2c::LayoutType::StripVertical,
+            LayoutArg::Separate => eq2c::LayoutType::Separate,
+        },
+        tonemap: args.tonemap,
+        exposure: args.exposure,
+        size: args.size,
+    };
 
-        layouts::LayoutOutput::Frames(faces) => {
-            for (face, buffer) in faces {
-                // Determine Suffix (px, nx, py, ny, pz, nz)
-                let suffix = match face {
-                    CubeFace::Right => "px",
-                    CubeFace::Left => "nx",
-                    CubeFace::Top => "py",
-                    CubeFace::Bottom => "ny",
-                    CubeFace::Front => "pz",
-                    CubeFace::Back => "nz",
-                };
-
-                // Inject suffix into filename: "output.png" -> "output_px.png"
-                let new_path = append_suffix(&args.output, suffix);
-
-                match encoder.encode(&buffer, &new_path) {
-                    Ok(_) => println!("Saved {}", new_path.display()),
-                    Err(e) => eprintln!("Error saving {}: {}", suffix, e),
-                }
-            }
-        }
+    if let Err(e) = eq2c::run(config) {
+        eprintln!("Error: {e}");
+        std::process::exit(1);
     }
 
-    println!("Total Time: {:?}", start_time.elapsed());
-}
-
-// Helper to modify paths
-fn append_suffix(path: &Path, suffix: &str) -> PathBuf {
-    let stem = path
-        .file_stem()
-        .and_then(|s| s.to_str())
-        .unwrap_or("output");
-    let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("png");
-    path.with_file_name(format!("{}_{}.{}", stem, suffix, ext))
+    println!("Total Time: {:?}", start.elapsed());
 }

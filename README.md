@@ -22,7 +22,7 @@ It supports high-precision floating-point processing, multithreaded rendering, a
   - `ACES` Source: http://www.oscars.org/science-technology/sci-tech-projects/aces
   - `Khronos PBR Neutral` Source: https://github.com/KhronosGroup/ToneMapping/blob/main/PBR_Neutral/pbrNeutral.glsl
   - `Reinhard` Source: https://www-old.cs.utah.edu/docs/techreports/2002/pdf/UUCS-02-001.pdf
-  - `AgX` Still in testing, need more research still.
+  - `AgX` Still in testing, still need more research.
 
 ---
 
@@ -105,7 +105,7 @@ output:
 Keep the data in floating point (Linear HDR) and increase face resolution to 2048px.
 
 ```bash
-./eq2c -i input.hdr -o sky_hq.exr --format exr --size 2048
+eq2c -i input.hdr -o sky_hq.exr --format exr --size 2048
 ```
 
 ### Tonemap Types
@@ -113,26 +113,28 @@ Keep the data in floating point (Linear HDR) and increase face resolution to 204
 Change the tonemap output to your liking (ACES, Khronos PBR Neutral, Reinhard, AgX, Linear).
 
 ```bash
-./eq2c -i input.hdr -o sky_hq.exr --format exr --t aces
+eq2c -i input.hdr -o sky_hq.exr --format exr --t aces
 ```
 
 ## 🏗️ Project Structure
 
 ```
 src/
-├── main.rs         # CLI Entry point & Argument parsing
-├── lib.rs          # Library interface
-├── math.rs         # Core 3D vector math & UV projection
-├── layouts/        # Geometry logic
-│   ├── mod.rs      # Layout Factory
-│   ├── cross.rs    # Cross layout implementation
-│   ├── separate.rs # Separate layout implementation
-│   └── strip.rs    # Strip (H/V) implementation
-└── codecs/         # File Format encoders
-    ├── mod.rs      # Encoder Factory
-    ├── png.rs      # LDR Tone Mapping & PNG saving
-    ├── tonemap.rs  # tonemaps implementation
-    └── exr.rs      # HDR EXR saving
+├── codecs
+│   ├── exr.rs
+│   ├── mod.rs
+│   ├── png.rs
+│   └── tonemap.rs
+├── image_utils.rs
+├── layouts
+│   ├── cross.rs
+│   ├── mod.rs
+│   ├── separate.rs
+│   └── strip.rs
+├── lib.rs
+├── main.rs
+├── math.rs
+└── paths.rs
 ```
 
 ## 🗺️ Roadmap
