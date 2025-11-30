@@ -1,3 +1,4 @@
+use crate::error::Result;
 use image::Rgb32FImage;
 use std::path::Path;
 
@@ -14,7 +15,7 @@ pub enum OutputFormat {
 }
 
 pub trait SkyboxEncoder {
-    fn encode(&self, image: &Rgb32FImage, output_path: &Path) -> Result<(), String>;
+    fn encode(&self, image: &Rgb32FImage, output_path: &Path) -> Result<()>;
 }
 
 pub fn get_encoder(

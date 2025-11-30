@@ -2,7 +2,7 @@ use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
 use std::time::Instant;
 
-use eq2c::{self, codecs::ToneMapType};
+use eq2c::{self, Eq2cError, codecs::ToneMapType};
 
 #[derive(Parser)]
 #[command(
@@ -75,8 +75,14 @@ fn main() {
     };
 
     if let Err(e) = eq2c::run(config) {
-        eprintln!("Error: {e}");
-        std::process::exit(1);
+        eprintln!("\x1b[31mError:\x1b[0m {}", e);
+
+        match e {
+            Eq2cError::Io(_) => std::process::exit(74),
+            Eq2cError::Image(_) => std::process::exit(65),
+            Eq2cError::InvalidDimensions { .. } => std::process::exit(64),
+            _ => std::process::exit(1),
+        }
     }
 
     println!("Total Time: {:?}", start.elapsed());
